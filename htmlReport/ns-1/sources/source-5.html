@@ -1,0 +1,235 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MetaDeEstudoService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">techForAll.techPoints.service</a>
+</div>
+
+<h1>Coverage Summary for Class: MetaDeEstudoService (techForAll.techPoints.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MetaDeEstudoService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85,7%
+  </span>
+  <span class="absValue">
+    (6/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (8/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92,5%
+  </span>
+  <span class="absValue">
+    (62/67)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package techForAll.techPoints.service
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired
+&nbsp;import org.springframework.stereotype.Service
+&nbsp;import techForAll.techPoints.domain.MetaEstudoSemana
+&nbsp;import techForAll.techPoints.domain.TempoEstudo
+&nbsp;import techForAll.techPoints.domain.TempoSessao
+&nbsp;import techForAll.techPoints.dtos.MetaDiariaDto
+&nbsp;import techForAll.techPoints.dtos.MetaEstudoSemanaDto
+&nbsp;import techForAll.techPoints.dtos.SessoesDto
+&nbsp;import techForAll.techPoints.repository.*
+&nbsp;import java.util.*
+&nbsp;import kotlin.NoSuchElementException
+&nbsp;
+<b class="fc">&nbsp;@Service</b>
+&nbsp;class MetaDeEstudoService @Autowired constructor(
+<b class="fc">&nbsp;    private val metaSemanalRepository: MetaEstudoSemanaRepository,</b>
+<b class="fc">&nbsp;    private val alunoRepository: AlunoRepository,</b>
+<b class="fc">&nbsp;    private val metaDiariaRepository: TempoEstudoRepository</b>
+&nbsp;) {
+&nbsp;
+&nbsp;    fun cadastrarMetaDiaria(
+&nbsp;        metaEstudoSemanaId: Long,
+&nbsp;        nomeDia: String,
+&nbsp;        data: String,
+&nbsp;        qtdTempoEstudo: String,
+&nbsp;        ativado: Boolean
+&nbsp;    ): MetaDiariaDto {
+<b class="fc">&nbsp;        val metaEstudoSemana = metaSemanalRepository.findById(metaEstudoSemanaId).orElseGet {</b>
+<b class="fc">&nbsp;            val aluno = alunoRepository.findById(metaEstudoSemanaId)</b>
+<b class="fc">&nbsp;                .orElseThrow { NoSuchElementException(&quot;Aluno não encontrado&quot;) }</b>
+<b class="fc">&nbsp;            val novaMetaEstudoSemana = MetaEstudoSemana(</b>
+<b class="fc">&nbsp;                id = metaEstudoSemanaId,</b>
+<b class="fc">&nbsp;                aluno = aluno,</b>
+<b class="fc">&nbsp;                diasAtivos = emptyList(),</b>
+<b class="fc">&nbsp;                horasTotal = 0.0,</b>
+<b class="fc">&nbsp;                tempoSessao = emptyList()</b>
+&nbsp;            )
+<b class="fc">&nbsp;            metaSemanalRepository.save(novaMetaEstudoSemana)</b>
+<b class="fc">&nbsp;            novaMetaEstudoSemana</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        println(&quot;metaEstudoSemana: $metaEstudoSemana&quot;)</b>
+<b class="fc">&nbsp;        val diaIdMap = mapOf(</b>
+<b class="fc">&nbsp;            &quot;segunda&quot; to 1L,</b>
+<b class="fc">&nbsp;            &quot;terça&quot; to 2L,</b>
+<b class="fc">&nbsp;            &quot;quarta&quot; to 3L,</b>
+<b class="fc">&nbsp;            &quot;quinta&quot; to 4L,</b>
+<b class="fc">&nbsp;            &quot;sexta&quot; to 5L,</b>
+<b class="fc">&nbsp;            &quot;sábado&quot; to 6L,</b>
+<b class="fc">&nbsp;            &quot;domingo&quot; to 7L</b>
+&nbsp;        )
+&nbsp;
+<b class="fc">&nbsp;        val diaId = diaIdMap[nomeDia.lowercase()] ?: throw IllegalArgumentException(&quot;Nome do dia inválido&quot;)</b>
+&nbsp;
+<b class="fc">&nbsp;        val metaDiariaExistente = metaDiariaRepository.findByMetaEstudoSemanaIdAndNomeDia(metaEstudoSemanaId, nomeDia)</b>
+&nbsp;
+<b class="fc">&nbsp;        val tempoEstudo = if (metaDiariaExistente != null) {</b>
+<b class="fc">&nbsp;            metaDiariaExistente.qtdTempoEstudo = qtdTempoEstudo</b>
+<b class="fc">&nbsp;            metaDiariaExistente.ativado = ativado</b>
+<b class="fc">&nbsp;            metaDiariaRepository.save(metaDiariaExistente)</b>
+<b class="fc">&nbsp;            metaDiariaExistente</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            val novaMetaDiaria = TempoEstudo(</b>
+<b class="fc">&nbsp;                id = diaId,</b>
+<b class="fc">&nbsp;                nomeDia = nomeDia,</b>
+<b class="fc">&nbsp;                data = data,</b>
+<b class="fc">&nbsp;                qtdTempoEstudo = qtdTempoEstudo,</b>
+<b class="fc">&nbsp;                ativado = ativado,</b>
+<b class="fc">&nbsp;                metaEstudoSemana = metaEstudoSemana</b>
+&nbsp;            )
+<b class="fc">&nbsp;            metaDiariaRepository.save(novaMetaDiaria)</b>
+<b class="fc">&nbsp;            novaMetaDiaria</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return mapMetaDiariaDto(tempoEstudo)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun mapMetaDiariaDto(tempoEstudo: TempoEstudo): MetaDiariaDto {
+<b class="fc">&nbsp;        return MetaDiariaDto(</b>
+<b class="fc">&nbsp;            id = tempoEstudo.id,</b>
+<b class="fc">&nbsp;            nomeDia = tempoEstudo.nomeDia,</b>
+<b class="fc">&nbsp;            data = tempoEstudo.data,</b>
+<b class="fc">&nbsp;            qtdTempoEstudo = tempoEstudo.qtdTempoEstudo,</b>
+<b class="fc">&nbsp;            ativado = tempoEstudo.ativado,</b>
+<b class="fc">&nbsp;            metaEstudoSemana = tempoEstudo.metaEstudoSemana.id!!</b>
+&nbsp;        )
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun mapToSessoesDto(tempoSessao: TempoSessao): SessoesDto {
+<b class="nc">&nbsp;        return SessoesDto(</b>
+<b class="nc">&nbsp;            id = tempoSessao.id,</b>
+<b class="nc">&nbsp;            diaSessao = tempoSessao.diaSessao,</b>
+<b class="nc">&nbsp;            qtdTempoSessao = tempoSessao.qtdTempoSessao,</b>
+<b class="nc">&nbsp;            metaEstudoSemana = tempoSessao.metaEstudoSemana.id!!</b>
+&nbsp;        )
+&nbsp;    }
+&nbsp;
+&nbsp;    fun obterMetaEstudoSemana(metaEstudoSemanaId: Long): MetaEstudoSemanaDto {
+<b class="fc">&nbsp;        val metaEstudoSemana = metaSemanalRepository.findById(metaEstudoSemanaId)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Meta de estudo semanal não encontrada&quot;) }</b>
+&nbsp;
+<b class="pc">&nbsp;        val diasAtivos = metaEstudoSemana.diasAtivos ?: emptyList()</b>
+<b class="pc">&nbsp;        val sessoes = metaEstudoSemana.tempoSessao ?: emptyList()</b>
+<b class="fc">&nbsp;        val horasTotaisMeta = diasAtivos.sumOf { it.qtdTempoEstudo.toDouble() }</b>
+<b class="fc">&nbsp;        metaEstudoSemana.horasTotal = horasTotaisMeta</b>
+&nbsp;
+<b class="fc">&nbsp;        val metasDiariasDto = diasAtivos.map { mapMetaDiariaDto(it) }</b>
+<b class="fc">&nbsp;        val sessoesDto = sessoes.map { mapToSessoesDto(it) }</b>
+&nbsp;
+<b class="fc">&nbsp;        return MetaEstudoSemanaDto(</b>
+<b class="fc">&nbsp;            id = metaEstudoSemana.id,</b>
+<b class="fc">&nbsp;            alunoId = metaEstudoSemana.aluno.id!!,</b>
+<b class="fc">&nbsp;            diasAtivos = metasDiariasDto,</b>
+<b class="fc">&nbsp;            horasTotal = metaEstudoSemana.horasTotal,</b>
+<b class="fc">&nbsp;            sessoes = sessoesDto</b>
+&nbsp;        )
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 00:28</div>
+</div>
+</body>
+</html>

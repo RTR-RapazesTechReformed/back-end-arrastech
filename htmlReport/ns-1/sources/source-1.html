@@ -1,0 +1,241 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > DadosEmpresaService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">techForAll.techPoints.service</a>
+</div>
+
+<h1>Coverage Summary for Class: DadosEmpresaService (techForAll.techPoints.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DadosEmpresaService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    58,3%
+  </span>
+  <span class="absValue">
+    (7/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (73/73)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package techForAll.techPoints.service
+&nbsp;
+&nbsp;import techForAll.techPoints.domain.Empresa
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired
+&nbsp;import org.springframework.stereotype.Service
+&nbsp;import techForAll.techPoints.dtos.EmpresaComEnderecoDto
+&nbsp;import techForAll.techPoints.dtos.EmpresaComRecrutadoresDto
+&nbsp;import techForAll.techPoints.dtos.EmpresaInput
+&nbsp;import techForAll.techPoints.repository.DadosEmpresaRepository
+&nbsp;import techForAll.techPoints.repository.EnderecoRepository
+&nbsp;import java.time.LocalDateTime
+&nbsp;import java.util.NoSuchElementException
+&nbsp;
+<b class="fc">&nbsp;@Service</b>
+&nbsp;class DadosEmpresaService @Autowired constructor(
+<b class="fc">&nbsp;    private val empresaRepository: DadosEmpresaRepository,</b>
+<b class="fc">&nbsp;    private val enderecoRepository: EnderecoRepository</b>
+&nbsp;) {
+&nbsp;    fun cadastrarEmpresa(novaEmpresa: EmpresaInput): Empresa {
+<b class="fc">&nbsp;        val endereco = enderecoRepository.findById(novaEmpresa.enderecoId)</b>
+<b class="fc">&nbsp;            .orElseThrow { IllegalArgumentException(&quot;Endereço não encontrado&quot;) }</b>
+<b class="fc">&nbsp;        val empresa = Empresa(</b>
+<b class="fc">&nbsp;            nomeEmpresa = novaEmpresa.nomeEmpresa,</b>
+<b class="fc">&nbsp;            cnpj = novaEmpresa.cnpj,</b>
+<b class="fc">&nbsp;            setorIndustria = novaEmpresa.setorIndustria,</b>
+<b class="fc">&nbsp;            telefoneContato = novaEmpresa.telefoneContato,</b>
+<b class="fc">&nbsp;            emailCorporativo = novaEmpresa.emailCorporativo,</b>
+<b class="fc">&nbsp;            endereco = endereco</b>
+&nbsp;        )
+<b class="fc">&nbsp;        return empresaRepository.save(empresa)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun listarEmpresas(): List&lt;EmpresaComRecrutadoresDto&gt; {
+<b class="fc">&nbsp;        val empresas = empresaRepository.findAll()</b>
+<b class="fc">&nbsp;        if (empresas.isEmpty()) {</b>
+<b class="fc">&nbsp;            throw NoSuchElementException(&quot;Nenhuma empresa encontrada&quot;)</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return empresas.map { empresa -&gt;</b>
+<b class="fc">&nbsp;            EmpresaComRecrutadoresDto(</b>
+<b class="fc">&nbsp;                id = empresa.id,</b>
+<b class="fc">&nbsp;                nomeEmpresa = empresa.nomeEmpresa,</b>
+<b class="fc">&nbsp;                cnpj = empresa.cnpj,</b>
+<b class="fc">&nbsp;                setorIndustria = empresa.setorIndustria,</b>
+<b class="fc">&nbsp;                telefoneContato = empresa.telefoneContato,</b>
+<b class="fc">&nbsp;                emailCorporativo = empresa.emailCorporativo,</b>
+<b class="fc">&nbsp;                endereco = empresa.endereco,</b>
+<b class="fc">&nbsp;                dataCriacao = empresa.dataCriacao,</b>
+<b class="fc">&nbsp;                recrutadores = empresa.recrutadores.map { it.nomeUsuario }</b>
+&nbsp;            )
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    fun buscarEmpresaPorId(idEmpresa: Long): EmpresaComRecrutadoresDto {
+<b class="fc">&nbsp;        val dadosEmpresa = empresaRepository.findById(idEmpresa)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Empresa não encontrada com o ID: $idEmpresa&quot;) }</b>
+&nbsp;
+<b class="fc">&nbsp;        val dadosEmpresaExibir = EmpresaComRecrutadoresDto(</b>
+<b class="fc">&nbsp;            id = dadosEmpresa.id,</b>
+<b class="fc">&nbsp;            nomeEmpresa = dadosEmpresa.nomeEmpresa,</b>
+<b class="fc">&nbsp;            cnpj = dadosEmpresa.cnpj,</b>
+<b class="fc">&nbsp;            setorIndustria = dadosEmpresa.setorIndustria,</b>
+<b class="fc">&nbsp;            telefoneContato = dadosEmpresa.telefoneContato,</b>
+<b class="fc">&nbsp;            emailCorporativo = dadosEmpresa.emailCorporativo,</b>
+<b class="fc">&nbsp;            endereco = dadosEmpresa.endereco,</b>
+<b class="fc">&nbsp;            dataCriacao = dadosEmpresa.dataCriacao,</b>
+<b class="fc">&nbsp;            recrutadores = dadosEmpresa.recrutadores.map{ it.nomeUsuario }</b>
+&nbsp;        )
+&nbsp;
+<b class="fc">&nbsp;        return dadosEmpresaExibir</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun atualizarEmpresa(idEmpresa: Long, empresaAtualizada: Map&lt;String, Any&gt;): EmpresaComRecrutadoresDto {
+<b class="fc">&nbsp;        val empresaExistente = empresaRepository.findById(idEmpresa)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Empresa não encontrada com o ID: $idEmpresa&quot;) }</b>
+&nbsp;
+<b class="pc">&nbsp;        empresaAtualizada[&quot;nomeEmpresa&quot;]?.let { empresaExistente.nomeEmpresa = it as String }</b>
+<b class="pc">&nbsp;        empresaAtualizada[&quot;setorIndustria&quot;]?.let { empresaExistente.setorIndustria = it as String }</b>
+<b class="pc">&nbsp;        empresaAtualizada[&quot;telefoneContato&quot;]?.let { empresaExistente.telefoneContato = it as String }</b>
+<b class="pc">&nbsp;        empresaAtualizada[&quot;emailCorporativo&quot;]?.let { empresaExistente.emailCorporativo = it as String }</b>
+<b class="pc">&nbsp;        empresaAtualizada[&quot;cnpj&quot;]?.let { empresaExistente.cnpj = it as String }</b>
+<b class="fc">&nbsp;        empresaExistente.dataAtualizacao = LocalDateTime.now()</b>
+&nbsp;
+<b class="fc">&nbsp;        empresaRepository.save(empresaExistente)</b>
+<b class="fc">&nbsp;        val dadosEmpresaExibir = EmpresaComRecrutadoresDto(</b>
+<b class="fc">&nbsp;            id = empresaExistente.id,</b>
+<b class="fc">&nbsp;            nomeEmpresa = empresaExistente.nomeEmpresa,</b>
+<b class="fc">&nbsp;            cnpj = empresaExistente.cnpj,</b>
+<b class="fc">&nbsp;            setorIndustria = empresaExistente.setorIndustria,</b>
+<b class="fc">&nbsp;            telefoneContato = empresaExistente.telefoneContato,</b>
+<b class="fc">&nbsp;            emailCorporativo = empresaExistente.emailCorporativo,</b>
+<b class="fc">&nbsp;            endereco = empresaExistente.endereco,</b>
+<b class="fc">&nbsp;            dataCriacao = empresaExistente.dataCriacao,</b>
+<b class="fc">&nbsp;            recrutadores = empresaExistente.recrutadores.map{ it.nomeUsuario }</b>
+&nbsp;        )
+&nbsp;
+<b class="fc">&nbsp;        return dadosEmpresaExibir</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    fun deletarEmpresa(idEmpresa: Long) {
+<b class="fc">&nbsp;        val empresaExistente = empresaRepository.findById(idEmpresa)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Empresa não encontrada com o ID: $idEmpresa&quot;) }</b>
+&nbsp;
+<b class="fc">&nbsp;        empresaRepository.delete(empresaExistente)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun buscarEmpresaPorCnpj(cnpj: String): EmpresaComEnderecoDto {
+<b class="fc">&nbsp;        val empresa = empresaRepository.findByCnpj(cnpj)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Empresa não encontrada com o CNPJ: $cnpj&quot;) }</b>
+&nbsp;
+<b class="fc">&nbsp;        return EmpresaComEnderecoDto(</b>
+<b class="fc">&nbsp;            id = empresa.id,</b>
+<b class="fc">&nbsp;            nomeEmpresa = empresa.nomeEmpresa,</b>
+<b class="fc">&nbsp;            cnpj = empresa.cnpj,</b>
+<b class="fc">&nbsp;            setorIndustria = empresa.setorIndustria,</b>
+<b class="fc">&nbsp;            telefoneContato = empresa.telefoneContato,</b>
+<b class="fc">&nbsp;            emailCorporativo = empresa.emailCorporativo,</b>
+<b class="fc">&nbsp;            endereco = empresa.endereco</b>
+&nbsp;        )
+&nbsp;    }
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 00:28</div>
+</div>
+</body>
+</html>

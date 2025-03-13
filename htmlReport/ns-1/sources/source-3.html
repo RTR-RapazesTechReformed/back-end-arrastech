@@ -1,0 +1,271 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > DashboardRecrutadorService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">techForAll.techPoints.service</a>
+</div>
+
+<h1>Coverage Summary for Class: DashboardRecrutadorService (techForAll.techPoints.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DashboardRecrutadorService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    34,8%
+  </span>
+  <span class="absValue">
+    (8/23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    76,6%
+  </span>
+  <span class="absValue">
+    (49/64)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DashboardRecrutadorService$listarAlunosIds$1$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    34,8%
+  </span>
+  <span class="absValue">
+    (8/23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    76,9%
+  </span>
+  <span class="absValue">
+    (50/65)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package techForAll.techPoints.service
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired
+&nbsp;import org.springframework.stereotype.Service
+&nbsp;import techForAll.techPoints.domain.*
+&nbsp;import techForAll.techPoints.repository.AlunoRepository
+&nbsp;import techForAll.techPoints.repository.CursoMoodleRepository
+&nbsp;import techForAll.techPoints.repository.RecrutadorRepository
+&nbsp;
+<b class="fc">&nbsp;@Service</b>
+&nbsp;class DashboardRecrutadorService @Autowired constructor(
+<b class="fc">&nbsp;    private val recrutadorRepository: RecrutadorRepository,</b>
+<b class="fc">&nbsp;    private val alunoRepository: AlunoRepository,</b>
+<b class="fc">&nbsp;    private val cursoRepository: CursoMoodleRepository,</b>
+<b class="fc">&nbsp;    private val notificacaoService: NotificacaoService</b>
+&nbsp;) {
+&nbsp;
+&nbsp;    fun adicionarAluno(idRecrutador: Long, idAluno: Long, tipoLista: String) {
+<b class="fc">&nbsp;        val recrutador = recrutadorRepository.findById(idRecrutador)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Recrutador não encontrado&quot;) }</b>
+&nbsp;
+<b class="fc">&nbsp;        val aluno = alunoRepository.findById(idAluno)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Aluno com ID $idAluno não encontrado&quot;) }</b>
+&nbsp;
+<b class="fc">&nbsp;        moverParaLista(idAluno, recrutador, tipoLista)</b>
+<b class="fc">&nbsp;        recrutadorRepository.save(recrutador)</b>
+&nbsp;
+<b class="pc">&nbsp;        if (tipoLista != &quot;favoritos&quot; &amp;&amp; tipoLista != &quot;cancelados&quot;) {</b>
+<b class="fc">&nbsp;            notificacaoService.criarNotificacao(aluno, recrutador, recrutador.empresa.id, tipoLista)</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    fun moverParaLista(idAluno: Long, recrutador: Recrutador, novaLista: String) {
+&nbsp;
+<b class="fc">&nbsp;        recrutador.favoritos = recrutador.favoritos.filter { it != idAluno }</b>
+<b class="fc">&nbsp;        recrutador.interessados = recrutador.interessados.filter { it != idAluno }</b>
+<b class="fc">&nbsp;        recrutador.processoSeletivo = recrutador.processoSeletivo.filter { it != idAluno }</b>
+<b class="fc">&nbsp;        recrutador.contratados = recrutador.contratados.filter { it != idAluno }</b>
+<b class="fc">&nbsp;        recrutador.cancelados = recrutador.cancelados.filter { it != idAluno }</b>
+&nbsp;
+<b class="pc">&nbsp;        when (novaLista) {</b>
+<b class="nc">&nbsp;            &quot;favoritos&quot; -&gt; recrutador.favoritos = recrutador.favoritos + idAluno</b>
+<b class="fc">&nbsp;            &quot;interessados&quot; -&gt; recrutador.interessados = recrutador.interessados + idAluno</b>
+<b class="nc">&nbsp;            &quot;processoSeletivo&quot; -&gt; recrutador.processoSeletivo = recrutador.processoSeletivo + idAluno</b>
+<b class="nc">&nbsp;            &quot;contratados&quot; -&gt; recrutador.contratados = recrutador.contratados + idAluno</b>
+<b class="nc">&nbsp;            &quot;cancelados&quot; -&gt; recrutador.cancelados = recrutador.cancelados + idAluno</b>
+<b class="nc">&nbsp;            else -&gt; throw IllegalArgumentException(&quot;Lista inválida&quot;)</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;     fun removerAluno(idRecrutador: Long, idAluno: Long, tipoLista: String) {
+<b class="fc">&nbsp;        val recrutador = recrutadorRepository.findById(idRecrutador)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Recrutador não encontrado&quot;) }</b>
+&nbsp;
+<b class="pc">&nbsp;        when (tipoLista) {</b>
+<b class="nc">&nbsp;            &quot;favoritos&quot; -&gt; recrutador.favoritos = recrutador.favoritos.filter { it != idAluno }</b>
+<b class="fc">&nbsp;            &quot;interessados&quot; -&gt; recrutador.interessados = recrutador.interessados.filter { it != idAluno }</b>
+<b class="nc">&nbsp;            &quot;processoSeletivo&quot; -&gt; recrutador.processoSeletivo = recrutador.processoSeletivo.filter { it != idAluno }</b>
+<b class="nc">&nbsp;            &quot;contratados&quot; -&gt; recrutador.contratados = recrutador.contratados.filter { it != idAluno }</b>
+<b class="nc">&nbsp;            &quot;cancelados&quot; -&gt; recrutador.cancelados = recrutador.cancelados.filter { it != idAluno }</b>
+<b class="nc">&nbsp;            else -&gt; throw IllegalArgumentException(&quot;Lista inválida&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        recrutadorRepository.save(recrutador)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun listarAlunos(idRecrutador: Long, tipoLista: String): List&lt;Map&lt;String, Any?&gt;&gt; {
+<b class="fc">&nbsp;        val recrutador = recrutadorRepository.findById(idRecrutador)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Recrutador não encontrado&quot;) }</b>
+&nbsp;
+<b class="pc">&nbsp;        val ids = when (tipoLista) {</b>
+<b class="fc">&nbsp;            &quot;favoritos&quot; -&gt; recrutador.favoritos</b>
+<b class="nc">&nbsp;            &quot;interessados&quot; -&gt; recrutador.interessados</b>
+<b class="nc">&nbsp;            &quot;processoSeletivo&quot; -&gt; recrutador.processoSeletivo</b>
+<b class="nc">&nbsp;            &quot;contratados&quot; -&gt; recrutador.contratados</b>
+<b class="nc">&nbsp;            &quot;cancelados&quot; -&gt; recrutador.cancelados</b>
+<b class="nc">&nbsp;            else -&gt; throw IllegalArgumentException(&quot;Lista inválida&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return listarAlunosIds(ids)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun listarTodosOsCursos(): List&lt;CursoMoodle&gt; {
+<b class="fc">&nbsp;        return cursoRepository.findAll()</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    fun listarCursosPorCategoria(categoria: String): List&lt;CursoMoodle&gt; {
+<b class="fc">&nbsp;        return cursoRepository.findAll().filter { curso -&gt;</b>
+<b class="pc">&nbsp;            curso.categorias?.contains(categoria, ignoreCase = true) == true</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private fun listarAlunosIds(ids: List&lt;Long&gt;): List&lt;Map&lt;String, Any?&gt;&gt; {
+<b class="fc">&nbsp;        return ids.mapNotNull { alunoId -&gt;</b>
+<b class="fc">&nbsp;            alunoRepository.findById(alunoId).map { aluno -&gt;</b>
+<b class="fc">&nbsp;                mapAluno(aluno)</b>
+<b class="fc">&nbsp;            }.orElse(null)</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun mapAluno(aluno: Aluno): Map&lt;String, Any?&gt; {
+<b class="fc">&nbsp;        return mapOf(</b>
+<b class="fc">&nbsp;            &quot;id&quot; to aluno.id,</b>
+<b class="fc">&nbsp;            &quot;nomeUsuario&quot; to aluno.nomeUsuario,</b>
+<b class="fc">&nbsp;            &quot;primeiroNome&quot; to aluno.primeiroNome,</b>
+<b class="fc">&nbsp;            &quot;sobrenome&quot; to aluno.sobrenome,</b>
+<b class="fc">&nbsp;            &quot;email&quot; to aluno.email,</b>
+<b class="fc">&nbsp;            &quot;telefone&quot; to aluno.telefone,</b>
+<b class="fc">&nbsp;            &quot;escolaridade&quot; to aluno.escolaridade,</b>
+<b class="fc">&nbsp;            &quot;descricao&quot; to aluno.descricao,</b>
+<b class="fc">&nbsp;            &quot;dtNasc&quot; to aluno.dtNasc,</b>
+<b class="fc">&nbsp;            &quot;endereco&quot; to mapOf(</b>
+<b class="fc">&nbsp;                &quot;cidade&quot; to aluno.endereco.cidade,</b>
+<b class="fc">&nbsp;                &quot;estado&quot; to aluno.endereco.estado</b>
+&nbsp;            ),
+&nbsp;        )
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 00:28</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,669 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > DashboardAdmService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">techForAll.techPoints.service</a>
+</div>
+
+<h1>Coverage Summary for Class: DashboardAdmService (techForAll.techPoints.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DashboardAdmService</td>
+<td class="coverageStat">
+  <span class="percent">
+    53,3%
+  </span>
+  <span class="absValue">
+    (8/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41,2%
+  </span>
+  <span class="absValue">
+    (33/80)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50,8%
+  </span>
+  <span class="absValue">
+    (161/317)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DashboardAdmService$gerarRelatorioCSV$csvRows$1$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (8/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41,2%
+  </span>
+  <span class="absValue">
+    (33/80)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50,5%
+  </span>
+  <span class="absValue">
+    (161/319)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package techForAll.techPoints.service
+&nbsp;import org.springframework.beans.factory.annotation.Autowired
+&nbsp;import org.springframework.http.ResponseEntity
+&nbsp;import org.springframework.stereotype.Service
+&nbsp;import org.springframework.web.multipart.MultipartFile
+&nbsp;import techForAll.techPoints.domain.Endereco
+&nbsp;import techForAll.techPoints.dtos.CursoAlunosDto
+&nbsp;import techForAll.techPoints.dtos.DemografiaDto
+&nbsp;import techForAll.techPoints.dtos.UsuarioInput
+&nbsp;
+&nbsp;import techForAll.techPoints.repository.AlunoRepository
+&nbsp;import techForAll.techPoints.repository.DashboardAdmRepository
+&nbsp;import techForAll.techPoints.repository.EnderecoRepository
+&nbsp;import java.io.BufferedReader
+&nbsp;import java.io.InputStreamReader
+&nbsp;import java.sql.Date
+&nbsp;import java.time.LocalDate
+&nbsp;import java.time.format.DateTimeFormatter
+&nbsp;import java.time.format.DateTimeParseException
+&nbsp;import java.util.concurrent.ArrayBlockingQueue
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;@Service</b>
+&nbsp;class DashboardAdmService@Autowired constructor(
+<b class="fc">&nbsp;    private val dashAdmRepositoy: DashboardAdmRepository,</b>
+<b class="fc">&nbsp;    private val enderecoRepository: EnderecoRepository,</b>
+<b class="fc">&nbsp;    private val enderecoService: EnderecoService,</b>
+<b class="fc">&nbsp;    private val alunoRepository: AlunoRepository,</b>
+<b class="fc">&nbsp;    private val pontuacaoService: PontuacaoService,</b>
+<b class="fc">&nbsp;    private val usuarioService: UsuarioService</b>
+&nbsp;){
+&nbsp;    fun getAlunosPorCurso(): List&lt;CursoAlunosDto&gt; {
+<b class="fc">&nbsp;        val rankingPorCurso = pontuacaoService.recuperarRankingPorCurso()</b>
+&nbsp;
+<b class="fc">&nbsp;        return rankingPorCurso.map { (cursoId, cursoData) -&gt;</b>
+<b class="fc">&nbsp;            val nomeCurso = cursoData[&quot;nomeCurso&quot;] as String</b>
+<b class="fc">&nbsp;            val ranking = cursoData[&quot;ranking&quot;] as List&lt;Map&lt;String, Any&gt;&gt;</b>
+<b class="fc">&nbsp;            val quantidadeAlunos = ranking.size</b>
+&nbsp;
+<b class="fc">&nbsp;            CursoAlunosDto(</b>
+<b class="fc">&nbsp;                nomeCurso = nomeCurso,</b>
+<b class="fc">&nbsp;                quantidadeAlunos = quantidadeAlunos</b>
+&nbsp;            )
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    fun getDemografiaPorTipoLista(tipoLista: String, idEmpresa: Long?): DemografiaDto {
+&nbsp;
+<b class="nc">&nbsp;        val ids = getAlunosPorTipoLista(tipoLista, idEmpresa)</b>
+&nbsp;
+<b class="nc">&nbsp;        val idsFila = processarIdsJson(ids)</b>
+<b class="nc">&nbsp;        if (idsFila.isEmpty()){</b>
+<b class="nc">&nbsp;            throw NoSuchElementException(&quot;Nenhum aluno encontrado&quot;)</b>
+&nbsp;        }
+<b class="nc">&nbsp;        val demografia = processarFilaDemografia(idsFila)</b>
+<b class="nc">&nbsp;        demografia.cursosFeitos.putAll(processarFilaCursosFeitosPorAlunos(idsFila))</b>
+<b class="nc">&nbsp;        return demografia</b>
+&nbsp;    }
+&nbsp;    fun gerarRelatorioDemografiaEmpresas(tipoLista: String, idEmpresa: Long?): String {
+&nbsp;
+<b class="nc">&nbsp;        val ids = getAlunosPorTipoLista(tipoLista, idEmpresa)</b>
+&nbsp;
+<b class="nc">&nbsp;        val idsFila = processarIdsJson(ids)</b>
+&nbsp;
+<b class="nc">&nbsp;        return gerarRelatorioCSV(idsFila.toList())</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun gerarRelatorioDemografiaAlunos(
+&nbsp;        sexo: String?,
+&nbsp;        etnia: String?,
+&nbsp;        idadeMaxima: Int?,
+&nbsp;        cidade: String?,
+&nbsp;        escolaridade: String?,
+&nbsp;        arquivo: String
+&nbsp;    ): String {
+<b class="nc">&nbsp;        val alunos = alunoRepository.findAlunosFiltrados(sexo, etnia, idadeMaxima, cidade, escolaridade)</b>
+<b class="nc">&nbsp;        if (arquivo == &quot;csv&quot;) {</b>
+<b class="nc">&nbsp;            return gerarRelatorioAlunos(alunos)</b>
+<b class="nc">&nbsp;        } else  return gerarRelatorioTXT(alunos)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun gerarRelatorioCSV(ids: List&lt;Long&gt;): String {
+<b class="nc">&nbsp;        val csvHeader = listOf(</b>
+<b class="nc">&nbsp;            &quot;ID&quot;, &quot;Nome de Usuário&quot;, &quot;CPF&quot;, &quot;Primeiro Nome&quot;, &quot;Sobrenome&quot;, &quot;Email&quot;, &quot;Telefone&quot;, &quot;Tipo Usuário&quot;, &quot;Sexo&quot;,</b>
+<b class="nc">&nbsp;            &quot;Etnia&quot;, &quot;Escolaridade&quot;, &quot;Data de Nascimento&quot;, &quot;Deletado&quot;, &quot;CEP&quot;, &quot;Rua&quot;, &quot;Cidade&quot;, &quot;Estado&quot;, &quot;Cursos&quot;</b>
+&nbsp;        )
+&nbsp;
+<b class="nc">&nbsp;        val csvRows = ids.map { id -&gt;</b>
+<b class="nc">&nbsp;            val alunoComCursos = comporAlunoComCursos(id)</b>
+&nbsp;
+<b class="nc">&nbsp;            val cursos = alunoComCursos[&quot;cursos&quot;] as? Map&lt;Long, Map&lt;String, Any&gt;&gt;</b>
+<b class="nc">&nbsp;            val endereco = alunoComCursos[&quot;endereco&quot;] as Map&lt;String, String&gt;</b>
+&nbsp;
+<b class="nc">&nbsp;            listOf(</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;id&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;nomeUsuario&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;cpf&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;primeiroNome&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;sobrenome&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;email&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;telefone&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;tipoUsuario&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;sexo&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;etnia&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;escolaridade&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;dataNascimento&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;deletado&quot;],</b>
+<b class="nc">&nbsp;                endereco[&quot;cep&quot;],</b>
+<b class="nc">&nbsp;                endereco[&quot;rua&quot;],</b>
+<b class="nc">&nbsp;                endereco[&quot;cidade&quot;],</b>
+<b class="nc">&nbsp;                endereco[&quot;estado&quot;],</b>
+<b class="nc">&nbsp;                cursos!!.entries.joinToString(&quot;; &quot;) { (cursoId, cursoData) -&gt;</b>
+<b class="nc">&nbsp;                    &quot;${cursoData[&quot;nomeCurso&quot;]} (Pontos: ${cursoData[&quot;pontosTotais&quot;]})&quot;</b>
+&nbsp;                }
+<b class="nc">&nbsp;            ).joinToString(&quot;,&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return (listOf(csvHeader.joinToString(&quot;,&quot;)) + csvRows).joinToString(&quot;\n&quot;)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun gerarRelatorioTXT(ids: List&lt;Long&gt;): String {
+<b class="fc">&nbsp;        val dataAtual = LocalDate.now().format(DateTimeFormatter.ofPattern(&quot;yyyyMMdd&quot;))</b>
+<b class="fc">&nbsp;        val txtHeader = &quot;00ARQUIVO_USUARIOS${dataAtual.padEnd(24)}V1&quot;</b>
+&nbsp;
+<b class="fc">&nbsp;        val txtRows = ids.map { id -&gt;</b>
+<b class="fc">&nbsp;            val alunoComDados = comporAlunoComCursos(id)</b>
+<b class="fc">&nbsp;            val endereco = alunoComDados[&quot;endereco&quot;] as Map&lt;String, String&gt;</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;            val dataNascimento = alunoComDados[&quot;dataNascimento&quot;]</b>
+&nbsp;
+<b class="fc">&nbsp;            println(dataNascimento)</b>
+&nbsp;
+<b class="fc">&nbsp;            &quot;02&quot; + listOf(</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;id&quot;].toString().padEnd(3).substring(0, 3),</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;nomeUsuario&quot;].toString().padEnd(20).substring(0, 20),</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;cpf&quot;].toString().padEnd(11).substring(0, 11),</b>
+<b class="pc">&nbsp;                alunoComDados[&quot;email&quot;]?.toString()?.padEnd(40)?.substring(0, 40),</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;primeiroNome&quot;].toString().padEnd(20).substring(0, 20),</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;sobrenome&quot;].toString().padEnd(20).substring(0, 20),</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;telefone&quot;].toString().padEnd(11).substring(0, 11),</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;dataNascimento&quot;].toString().padEnd(10).substring(0, 10),</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;escolaridade&quot;].toString().padEnd(22).substring(0, 22),</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;sexo&quot;].toString().padEnd(9).substring(0, 9),</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;etnia&quot;].toString().padEnd(8).substring(0, 8),</b>
+<b class="fc">&nbsp;                alunoComDados[&quot;deletado&quot;].toString().padEnd(5).substring(0, 5),</b>
+<b class="fc">&nbsp;                endereco[&quot;cep&quot;].toString().padEnd(9).substring(0, 9),</b>
+<b class="fc">&nbsp;                endereco[&quot;rua&quot;].toString().padEnd(30).substring(0, 30),</b>
+<b class="fc">&nbsp;                endereco[&quot;numero&quot;].toString().padEnd(5).substring(0, 5),</b>
+<b class="fc">&nbsp;                endereco[&quot;cidade&quot;].toString().padEnd(30).substring(0, 30),</b>
+<b class="fc">&nbsp;                endereco[&quot;estado&quot;].toString().padEnd(2).substring(0, 2)</b>
+<b class="fc">&nbsp;            ).joinToString(&quot;&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        val txtTrailer = &quot;01${ids.size.toString().padStart(10, &#39;0&#39;)}&quot;</b>
+&nbsp;
+<b class="fc">&nbsp;        return (listOf(txtHeader) + txtRows + txtTrailer).joinToString(&quot;\r\n&quot;)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun gerarRelatorioAlunos(ids: List&lt;Long&gt;): String {
+<b class="nc">&nbsp;        val csvHeader = listOf(</b>
+<b class="nc">&nbsp;            &quot;ID&quot;, &quot;Nome de Usuário&quot;, &quot;CPF&quot;, &quot;Primeiro Nome&quot;, &quot;Sobrenome&quot;, &quot;Email&quot;, &quot;Telefone&quot;, &quot;Tipo Usuário&quot;, &quot;Sexo&quot;,</b>
+<b class="nc">&nbsp;            &quot;Etnia&quot;, &quot;Escolaridade&quot;, &quot;Data de Nascimento&quot;, &quot;Deletado&quot;, &quot;CEP&quot;, &quot;Rua&quot;, &quot;Cidade&quot;, &quot;Estado&quot;,</b>
+&nbsp;        )
+&nbsp;
+<b class="nc">&nbsp;        val csvRows = ids.map { id -&gt;</b>
+<b class="nc">&nbsp;            val alunoComCursos = comporAlunoComCursos(id)</b>
+&nbsp;
+<b class="nc">&nbsp;            val endereco = alunoComCursos[&quot;endereco&quot;] as Map&lt;String, String&gt;</b>
+&nbsp;
+<b class="nc">&nbsp;            listOf(</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;id&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;nomeUsuario&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;cpf&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;primeiroNome&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;sobrenome&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;email&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;telefone&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;tipoUsuario&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;sexo&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;etnia&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;escolaridade&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;dataNascimento&quot;],</b>
+<b class="nc">&nbsp;                alunoComCursos[&quot;deletado&quot;],</b>
+<b class="nc">&nbsp;                endereco[&quot;cep&quot;],</b>
+<b class="nc">&nbsp;                endereco[&quot;rua&quot;],</b>
+<b class="nc">&nbsp;                endereco[&quot;cidade&quot;],</b>
+<b class="nc">&nbsp;                endereco[&quot;estado&quot;],</b>
+<b class="nc">&nbsp;            ).joinToString(&quot;,&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return (listOf(csvHeader.joinToString(&quot;,&quot;)) + csvRows).joinToString(&quot;\n&quot;)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun comporAlunoComCursos(idAluno: Long): Map&lt;String, Any?&gt; {
+&nbsp;
+<b class="fc">&nbsp;        val aluno = usuarioService.buscarUsuarioPorId(idAluno)</b>
+&nbsp;
+<b class="fc">&nbsp;        val cursos = pontuacaoService.recuperarPontosTotaisPorCurso(idAluno)</b>
+&nbsp;
+<b class="fc">&nbsp;        return aluno.toMutableMap().apply {</b>
+<b class="fc">&nbsp;            this[&quot;cursos&quot;] = cursos</b>
+&nbsp;
+<b class="fc">&nbsp;            val endereco = aluno[&quot;endereco&quot;]</b>
+<b class="fc">&nbsp;            this[&quot;endereco&quot;] = if (endereco is Endereco) {</b>
+&nbsp;
+<b class="fc">&nbsp;                mapOf(</b>
+<b class="fc">&nbsp;                    &quot;cep&quot; to endereco.cep,</b>
+<b class="fc">&nbsp;                    &quot;rua&quot; to endereco.rua,</b>
+<b class="fc">&nbsp;                    &quot;numero&quot; to endereco.numero,</b>
+<b class="fc">&nbsp;                    &quot;cidade&quot; to endereco.cidade,</b>
+<b class="fc">&nbsp;                    &quot;estado&quot; to endereco.estado</b>
+&nbsp;                )
+&nbsp;            } else {
+<b class="fc">&nbsp;                throw IllegalStateException(&quot;Endereço não pode ser nulo. Verifique o ID informado e tente novamente.&quot;)</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun processarFilaDemografia(idsFila: ArrayBlockingQueue&lt;Long&gt;): DemografiaDto {
+<b class="nc">&nbsp;        val demografia = DemografiaDto()</b>
+&nbsp;
+<b class="nc">&nbsp;        val tamanhoInicial = idsFila.size</b>
+&nbsp;
+<b class="nc">&nbsp;        for (i in 0 until tamanhoInicial) {</b>
+<b class="nc">&nbsp;            val id = idsFila.poll()</b>
+<b class="nc">&nbsp;            val aluno = alunoRepository.findById(id).orElse(null)</b>
+&nbsp;
+<b class="nc">&nbsp;            if (aluno != null) {</b>
+<b class="nc">&nbsp;                demografia.processarAluno(aluno)</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            idsFila.add(id)</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return demografia</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun getAlunosPorTipoLista(tipoLista: String, idEmpresa: Long?): List&lt;Any&gt;{
+<b class="pc">&nbsp;        val ids = when (tipoLista) {</b>
+<b class="pc">&nbsp;            &quot;todos&quot; -&gt; if (idEmpresa != null)dashAdmRepositoy.findIdsTodosByEmpresa(idEmpresa) else dashAdmRepositoy.findIdsTodos()</b>
+<b class="pc">&nbsp;            &quot;contratados&quot; -&gt; if (idEmpresa != null) dashAdmRepositoy.findIdsContratadosByEmpresa(idEmpresa) else dashAdmRepositoy.findIdsContratados()</b>
+<b class="pc">&nbsp;            &quot;interessados&quot; -&gt; if (idEmpresa != null) dashAdmRepositoy.findIdsInteressadosByEmpresa(idEmpresa) else dashAdmRepositoy.findIdsInteressados()</b>
+<b class="nc">&nbsp;            &quot;processoSeletivo&quot; -&gt; if (idEmpresa != null) dashAdmRepositoy.findIdsProcessoSeletivoByEmpresa(idEmpresa) else dashAdmRepositoy.findIdsProcessoSeletivo()</b>
+<b class="fc">&nbsp;            else -&gt; throw IllegalArgumentException(&quot;Tipo de lista inválido&quot;)</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return ids</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun processarIdsJson(idStrings: List&lt;Any&gt;): ArrayBlockingQueue&lt;Long&gt; {
+&nbsp;
+<b class="nc">&nbsp;        val ids = mutableListOf&lt;Long&gt;()</b>
+&nbsp;
+&nbsp;        /*
+&nbsp;            pode receber um objeto desse tipo:
+&nbsp;            idStrings = {ArrayList@18270}  size = 1
+&nbsp;            0 = {Object[3]@18281}
+&nbsp;                0 = &quot;[7]&quot;
+&nbsp;                1 = &quot;[5, 4]&quot;
+&nbsp;                2 = &quot;[]&quot;
+&nbsp;         */
+&nbsp;
+<b class="nc">&nbsp;        for (idString in idStrings) {</b>
+&nbsp;
+<b class="nc">&nbsp;            if (idString is Array&lt;*&gt;) {</b>
+&nbsp;
+<b class="nc">&nbsp;                for (elemento in idString) {</b>
+&nbsp;
+<b class="nc">&nbsp;                    if (elemento is String &amp;&amp; elemento.isNotBlank() &amp;&amp; elemento != &quot;[]&quot;) {</b>
+<b class="nc">&nbsp;                        elemento</b>
+<b class="nc">&nbsp;                            .removeSurrounding(&quot;[&quot;, &quot;]&quot;)</b>
+<b class="nc">&nbsp;                            .split(&quot;,&quot;)</b>
+<b class="nc">&nbsp;                            .mapNotNull { it.trim().toLongOrNull() }</b>
+<b class="nc">&nbsp;                            .forEach { ids.add(it) }</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            else if (idString is String &amp;&amp; idString.isNotBlank() &amp;&amp; idString != &quot;[]&quot;) {</b>
+&nbsp;
+<b class="nc">&nbsp;                idString</b>
+<b class="nc">&nbsp;                    .removeSurrounding(&quot;[&quot;, &quot;]&quot;)</b>
+<b class="nc">&nbsp;                    .split(&quot;,&quot;)</b>
+<b class="nc">&nbsp;                    .mapNotNull { it.trim().toLongOrNull() }</b>
+<b class="nc">&nbsp;                    .forEach { ids.add(it) }</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        if (ids.isNotEmpty()) {</b>
+<b class="nc">&nbsp;            val idsFila = ArrayBlockingQueue&lt;Long&gt;(ids.size)</b>
+<b class="nc">&nbsp;            idsFila.addAll(ids)</b>
+<b class="nc">&nbsp;            return idsFila</b>
+<b class="nc">&nbsp;        } else  throw NoSuchElementException(&quot;Nenhum aluno encontrado&quot;)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun processarFilaCursosFeitosPorAlunos(idsFila: ArrayBlockingQueue&lt;Long&gt;): Map&lt;String, Int&gt; {
+<b class="fc">&nbsp;        val cursosFeitos = mutableMapOf&lt;String, Int&gt;()</b>
+&nbsp;
+<b class="fc">&nbsp;        while (idsFila.isNotEmpty()) {</b>
+<b class="fc">&nbsp;            val idAluno = idsFila.poll()</b>
+<b class="fc">&nbsp;            val pontosPorCurso = pontuacaoService.recuperarPontosTotaisPorCurso(idAluno)</b>
+<b class="fc">&nbsp;            pontosPorCurso.forEach { (_, cursoInfo) -&gt;</b>
+<b class="fc">&nbsp;                val nomeCurso = cursoInfo[&quot;nomeCurso&quot;] as String</b>
+<b class="fc">&nbsp;                val pontosTotais = cursoInfo[&quot;pontosTotais&quot;] as Int</b>
+<b class="fc">&nbsp;                if (pontosTotais &gt; 0) {</b>
+<b class="fc">&nbsp;                    cursosFeitos[nomeCurso] = cursosFeitos.getOrDefault(nomeCurso, 0) + 1</b>
+&nbsp;                }
+<b class="fc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return cursosFeitos</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun processarArquivoCsv(file: MultipartFile): Map&lt;String, Any&gt; {
+&nbsp;
+<b class="fc">&nbsp;        if (file.isEmpty || !file.originalFilename!!.endsWith(&quot;.csv&quot;)) {</b>
+<b class="fc">&nbsp;            throw IllegalArgumentException(&quot;Arquivo inválido. Apenas arquivos CSV são permitidos.&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        val bufferedReader = BufferedReader(InputStreamReader(file.inputStream, Charsets.UTF_8))</b>
+<b class="fc">&nbsp;        val alunosCadastrados = mutableListOf&lt;UsuarioInput&gt;()</b>
+<b class="fc">&nbsp;        val erros = mutableListOf&lt;String&gt;()</b>
+&nbsp;
+<b class="fc">&nbsp;        bufferedReader.useLines { lines -&gt;</b>
+&nbsp;
+<b class="fc">&nbsp;            lines.drop(1).forEachIndexed { index, line -&gt;</b>
+<b class="fc">&nbsp;                try {</b>
+<b class="fc">&nbsp;                    val data = line.split(&quot;,&quot;).map { it.trim() }</b>
+&nbsp;
+<b class="fc">&nbsp;                    if (data.size == 16) {</b>
+&nbsp;
+<b class="fc">&nbsp;                        val nomeUsuario = data[0]</b>
+<b class="fc">&nbsp;                        val cpf = data[1]</b>
+<b class="fc">&nbsp;                        val email = data[2]</b>
+<b class="fc">&nbsp;                        val primeiroNome = data[3]</b>
+<b class="fc">&nbsp;                        val sobrenome = data[4]</b>
+<b class="fc">&nbsp;                        val telefone = data[5]</b>
+<b class="fc">&nbsp;                        val senha = data[6]</b>
+<b class="fc">&nbsp;                        val dtNasc = LocalDate.parse(data[7])</b>
+<b class="fc">&nbsp;                        val escolaridade = data[8]</b>
+<b class="fc">&nbsp;                        val sexo = data[9]</b>
+<b class="fc">&nbsp;                        val etnia = data[10]</b>
+&nbsp;
+<b class="fc">&nbsp;                        val cep = data[11]</b>
+<b class="fc">&nbsp;                        val rua = data[12]</b>
+<b class="fc">&nbsp;                        val numero = data[13]</b>
+<b class="fc">&nbsp;                        val cidade = data[14]</b>
+<b class="fc">&nbsp;                        val estado = data[15]</b>
+&nbsp;
+<b class="fc">&nbsp;                        val enderecoCadastro = Endereco(</b>
+<b class="fc">&nbsp;                            cep = cep,</b>
+<b class="fc">&nbsp;                            rua = rua,</b>
+<b class="fc">&nbsp;                            numero = numero,</b>
+<b class="fc">&nbsp;                            cidade = cidade,</b>
+<b class="fc">&nbsp;                            estado = estado</b>
+&nbsp;                        )
+<b class="fc">&nbsp;                        enderecoService.cadastrarEndereco(enderecoCadastro)</b>
+&nbsp;
+<b class="fc">&nbsp;                        var endereco = enderecoRepository.findByCepAndNumero(cep, numero)</b>
+&nbsp;
+<b class="fc">&nbsp;                        val alunoInput = UsuarioInput(</b>
+<b class="fc">&nbsp;                            nomeUsuario = nomeUsuario,</b>
+<b class="fc">&nbsp;                            cpf = cpf,</b>
+<b class="fc">&nbsp;                            senha = senha,</b>
+<b class="fc">&nbsp;                            primeiroNome = primeiroNome,</b>
+<b class="fc">&nbsp;                            sobrenome = sobrenome,</b>
+<b class="fc">&nbsp;                            email = email,</b>
+<b class="fc">&nbsp;                            telefone = telefone,</b>
+<b class="fc">&nbsp;                            tipoUsuario = 1,</b>
+<b class="fc">&nbsp;                            autenticado = false,</b>
+<b class="fc">&nbsp;                            enderecoId = endereco!!.id,</b>
+<b class="fc">&nbsp;                            dtNasc = dtNasc,</b>
+<b class="fc">&nbsp;                            escolaridade = escolaridade,</b>
+<b class="fc">&nbsp;                            sexo = sexo,</b>
+<b class="fc">&nbsp;                            etnia = etnia,</b>
+<b class="fc">&nbsp;                            cnpj = null,</b>
+<b class="fc">&nbsp;                            cargoUsuario = null,</b>
+<b class="fc">&nbsp;                            imagemPerfil =  null,</b>
+<b class="fc">&nbsp;                            descricao =  null,</b>
+<b class="fc">&nbsp;                            nivelAcesso = null</b>
+&nbsp;                        )
+&nbsp;
+<b class="fc">&nbsp;                        usuarioService.cadastrarUsuario(alunoInput)</b>
+&nbsp;
+<b class="fc">&nbsp;                        alunosCadastrados.add(alunoInput)</b>
+&nbsp;
+&nbsp;                    } else {
+<b class="fc">&nbsp;                        erros.add(&quot;Linha ${index + 2}: Número de colunas incorreto&quot;)</b>
+&nbsp;                    }
+&nbsp;
+<b class="nc">&nbsp;                } catch (ex: Exception) {</b>
+<b class="nc">&nbsp;                    erros.add(&quot;Linha ${index + 2}: ${ex.message}&quot;)</b>
+&nbsp;                }
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return mapOf(</b>
+<b class="fc">&nbsp;            &quot;sucesso&quot; to alunosCadastrados.size,</b>
+<b class="fc">&nbsp;            &quot;erros&quot; to erros</b>
+&nbsp;        )
+&nbsp;    }
+&nbsp;
+&nbsp;    fun processarArquivoTxt(file: MultipartFile): Map&lt;String, Any&gt; {
+<b class="pc">&nbsp;        if (file.isEmpty || !file.originalFilename!!.endsWith(&quot;.txt&quot;)) {</b>
+<b class="fc">&nbsp;            throw IllegalArgumentException(&quot;Arquivo inválido. Apenas arquivos TXT são permitidos.&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        val bufferedReader = BufferedReader(InputStreamReader(file.inputStream, Charsets.UTF_8))</b>
+<b class="fc">&nbsp;        val usuariosCadastrados = mutableListOf&lt;UsuarioInput&gt;()</b>
+<b class="fc">&nbsp;        val erros = mutableListOf&lt;String&gt;()</b>
+<b class="fc">&nbsp;        var qtdRegistrosEsperados = 0</b>
+&nbsp;
+<b class="fc">&nbsp;        bufferedReader.useLines { lines -&gt;</b>
+<b class="fc">&nbsp;            lines.forEachIndexed { index, line -&gt;</b>
+<b class="fc">&nbsp;                try {</b>
+<b class="fc">&nbsp;                    when {</b>
+&nbsp;
+<b class="fc">&nbsp;                        line.startsWith(&quot;00&quot;) -&gt; {</b>
+<b class="pc">&nbsp;                            if (line.length &lt; 32) {</b>
+<b class="fc">&nbsp;                                erros.add(&quot;Linha ${index + 1}: Header com tamanho inválido.&quot;)</b>
+&nbsp;                            }
+&nbsp;                        }
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;                        line.startsWith(&quot;02&quot;) -&gt; {</b>
+<b class="pc">&nbsp;                            if (line.length &lt; 249) {</b>
+<b class="fc">&nbsp;                                erros.add(&quot;Linha ${index + 1}: Registro com tamanho insuficiente.&quot;)</b>
+&nbsp;                                return@forEachIndexed
+&nbsp;                            }
+&nbsp;
+<b class="nc">&nbsp;                            val nomeUsuario = line.substring(2, 22).trim()       // Tamanho: 20</b>
+<b class="nc">&nbsp;                            val cpf = line.substring(22, 33).trim()              // Tamanho: 11</b>
+<b class="nc">&nbsp;                            val email = line.substring(33, 73).trim()            // Tamanho: 40</b>
+<b class="nc">&nbsp;                            val primeiroNome = line.substring(73, 93).trim()     // Tamanho: 20</b>
+<b class="nc">&nbsp;                            val sobrenome = line.substring(93, 113).trim()       // Tamanho: 20</b>
+<b class="nc">&nbsp;                            val telefone = line.substring(113, 124).trim()       // Tamanho: 11</b>
+<b class="nc">&nbsp;                            var dtNasc = line.substring(124, 134).trim()         // Tamanho: 10</b>
+<b class="nc">&nbsp;                            val escolaridade = line.substring(134, 156).trim()   // Tamanho: 22</b>
+<b class="nc">&nbsp;                            val sexo = line.substring(156, 165).trim()           // Tamanho: 9</b>
+<b class="nc">&nbsp;                            val etnia = line.substring(165, 173).trim()          // Tamanho: 8</b>
+<b class="nc">&nbsp;                            val cep = line.substring(173, 182).trim()            // Tamanho: 9</b>
+<b class="nc">&nbsp;                            val rua = line.substring(182, 212).trim()            // Tamanho: 30</b>
+<b class="nc">&nbsp;                            val numero = line.substring(212, 217).trim()         // Tamanho: 5</b>
+<b class="nc">&nbsp;                            val cidade = line.substring(217, 247).trim()         // Tamanho: 30</b>
+<b class="nc">&nbsp;                            val estado = line.substring(247, 249).trim()         // Tamanho: 2</b>
+&nbsp;
+<b class="nc">&nbsp;                            val senhaGerada =  &quot;@Arast$cpf&quot;</b>
+&nbsp;
+<b class="nc">&nbsp;                            val dataFormatada =  LocalDate.parse(dtNasc, DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd&quot;))</b>
+&nbsp;
+<b class="nc">&nbsp;                            val enderecoCadastro = Endereco(</b>
+<b class="nc">&nbsp;                                cep = cep,</b>
+<b class="nc">&nbsp;                                rua = rua,</b>
+<b class="nc">&nbsp;                                numero = numero,</b>
+<b class="nc">&nbsp;                                cidade = cidade,</b>
+<b class="nc">&nbsp;                                estado = estado</b>
+&nbsp;                            )
+&nbsp;
+<b class="nc">&nbsp;                            enderecoService.cadastrarEndereco(enderecoCadastro)</b>
+<b class="nc">&nbsp;                            val endereco = enderecoRepository.findByCepAndNumero(cep, numero)</b>
+<b class="nc">&nbsp;                                ?: throw IllegalStateException(&quot;Endereço não encontrado após cadastro.&quot;)</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;                            val usuarioInput = UsuarioInput(</b>
+<b class="nc">&nbsp;                                nomeUsuario = nomeUsuario,</b>
+<b class="nc">&nbsp;                                cpf = cpf,</b>
+<b class="nc">&nbsp;                                senha = senhaGerada,</b>
+<b class="nc">&nbsp;                                primeiroNome = primeiroNome,</b>
+<b class="nc">&nbsp;                                sobrenome = sobrenome,</b>
+<b class="nc">&nbsp;                                email = email,</b>
+<b class="nc">&nbsp;                                telefone = telefone,</b>
+<b class="nc">&nbsp;                                tipoUsuario = 1,</b>
+<b class="nc">&nbsp;                                autenticado = false,</b>
+<b class="nc">&nbsp;                                enderecoId = endereco.id,</b>
+<b class="nc">&nbsp;                                dtNasc = dataFormatada,</b>
+<b class="nc">&nbsp;                                escolaridade = escolaridade,</b>
+<b class="nc">&nbsp;                                sexo = sexo,</b>
+<b class="nc">&nbsp;                                etnia = etnia,</b>
+<b class="nc">&nbsp;                                cnpj = null,</b>
+<b class="nc">&nbsp;                                cargoUsuario = null,</b>
+<b class="nc">&nbsp;                                imagemPerfil =  null,</b>
+<b class="nc">&nbsp;                                descricao =  null,</b>
+<b class="nc">&nbsp;                                nivelAcesso =  null</b>
+&nbsp;                            )
+&nbsp;
+<b class="nc">&nbsp;                            usuarioService.cadastrarUsuario(usuarioInput)</b>
+<b class="nc">&nbsp;                            usuariosCadastrados.add(usuarioInput)</b>
+&nbsp;                        }
+&nbsp;
+<b class="pc">&nbsp;                        line.startsWith(&quot;01&quot;) -&gt; {</b>
+<b class="pc">&nbsp;                            if (line.length &gt;= 12) {</b>
+<b class="nc">&nbsp;                                qtdRegistrosEsperados = line.substring(2, 12).trim().toInt()</b>
+&nbsp;                            } else {
+<b class="fc">&nbsp;                                erros.add(&quot;Linha ${index + 1}: Trailer com tamanho insuficiente.&quot;)</b>
+&nbsp;                            }
+&nbsp;                        }
+&nbsp;
+&nbsp;                        else -&gt; {
+<b class="nc">&nbsp;                            erros.add(&quot;Linha ${index + 1}: Registro inválido ou desconhecido.&quot;)</b>
+&nbsp;                        }
+&nbsp;                    }
+<b class="nc">&nbsp;                } catch (ex: Exception) {</b>
+<b class="nc">&nbsp;                    erros.add(&quot;Linha ${index + 1}: Erro ao processar - ${ex.message}&quot;)</b>
+&nbsp;                }
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="pc">&nbsp;        if (qtdRegistrosEsperados != usuariosCadastrados.size) {</b>
+<b class="nc">&nbsp;            erros.add(</b>
+<b class="nc">&nbsp;                &quot;Quantidade de registros informada no trailer ($qtdRegistrosEsperados) &quot; +</b>
+<b class="nc">&nbsp;                        &quot;não corresponde ao número de registros processados (${usuariosCadastrados.size}).&quot;</b>
+&nbsp;            )
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return mapOf(</b>
+<b class="fc">&nbsp;            &quot;sucesso&quot; to usuariosCadastrados.size,</b>
+<b class="fc">&nbsp;            &quot;erros&quot; to erros</b>
+&nbsp;        )
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 00:28</div>
+</div>
+</body>
+</html>

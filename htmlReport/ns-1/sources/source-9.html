@@ -1,0 +1,411 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UsuarioService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">techForAll.techPoints.service</a>
+</div>
+
+<h1>Coverage Summary for Class: UsuarioService (techForAll.techPoints.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UsuarioService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    72,7%
+  </span>
+  <span class="absValue">
+    (48/66)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98,5%
+  </span>
+  <span class="absValue">
+    (192/195)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package techForAll.techPoints.service
+&nbsp;import org.springframework.beans.factory.annotation.Autowired
+&nbsp;import org.springframework.stereotype.Service
+&nbsp;import techForAll.techPoints.domain.Administrador
+&nbsp;import techForAll.techPoints.domain.Aluno
+&nbsp;import techForAll.techPoints.domain.Curso
+&nbsp;import techForAll.techPoints.domain.Recrutador
+&nbsp;import techForAll.techPoints.dtos.UsuarioInput
+&nbsp;import techForAll.techPoints.repository.*
+&nbsp;import java.time.LocalDate
+&nbsp;import java.time.LocalDateTime
+&nbsp;import java.util.concurrent.ArrayBlockingQueue
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;@Service</b>
+&nbsp;class UsuarioService @Autowired constructor(
+<b class="fc">&nbsp;    private val alunoRepository: AlunoRepository,</b>
+<b class="fc">&nbsp;    private val recrutadorRepository: RecrutadorRepository,</b>
+<b class="fc">&nbsp;    private val usuarioRepository: UsuarioRepository,</b>
+<b class="fc">&nbsp;    private val dadosEmpresaRepository: DadosEmpresaRepository,</b>
+<b class="fc">&nbsp;    private val enderecoRepository: EnderecoRepository,</b>
+<b class="fc">&nbsp;    private val administradorRepository: AdministradorRepository</b>
+&nbsp;
+&nbsp;    ) {
+&nbsp;
+&nbsp;    fun cadastrarUsuario(request: UsuarioInput): Any {
+<b class="fc">&nbsp;        when (request.tipoUsuario) {</b>
+&nbsp;            1 -&gt; {
+<b class="fc">&nbsp;                val endereco = enderecoRepository.findById(request.enderecoId!!)</b>
+<b class="fc">&nbsp;                    .orElseThrow { IllegalArgumentException(&quot;Endereço não encontrado&quot;) }</b>
+<b class="fc">&nbsp;                val aluno = Aluno(</b>
+<b class="fc">&nbsp;                    nomeUsuario = request.nomeUsuario,</b>
+<b class="fc">&nbsp;                    cpf = request.cpf,</b>
+<b class="fc">&nbsp;                    senha = request.senha,</b>
+<b class="fc">&nbsp;                    primeiroNome = request.primeiroNome,</b>
+<b class="fc">&nbsp;                    sobrenome = request.sobrenome,</b>
+<b class="fc">&nbsp;                    email = request.email,</b>
+<b class="fc">&nbsp;                    telefone = request.telefone,</b>
+<b class="fc">&nbsp;                    imagemPerfil = null,</b>
+<b class="fc">&nbsp;                    dtNasc = request.dtNasc!!,</b>
+<b class="fc">&nbsp;                    escolaridade = request.escolaridade!!,</b>
+<b class="fc">&nbsp;                    sexo = request.sexo,</b>
+<b class="fc">&nbsp;                    etnia = request.etnia,</b>
+<b class="fc">&nbsp;                    autenticado = request.autenticado,</b>
+<b class="fc">&nbsp;                    endereco = endereco</b>
+&nbsp;                )
+<b class="fc">&nbsp;                alunoRepository.save(aluno.criarUsuario(endereco, null) as Aluno)</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            2 -&gt; {
+<b class="fc">&nbsp;                val empresa = dadosEmpresaRepository.findByCnpj(request.cnpj!!)</b>
+<b class="fc">&nbsp;                    .orElseThrow { IllegalArgumentException(&quot;Empresa não encontrada com o CNPJ informado&quot;) }</b>
+<b class="fc">&nbsp;                val recrutador = Recrutador(</b>
+<b class="fc">&nbsp;                    favoritos = emptyList(),</b>
+<b class="fc">&nbsp;                    interessados = emptyList(),</b>
+<b class="fc">&nbsp;                    empresa = empresa,</b>
+<b class="fc">&nbsp;                    cargoUsuario = request.cargoUsuario!!,</b>
+<b class="fc">&nbsp;                    nomeUsuario = request.nomeUsuario,</b>
+<b class="fc">&nbsp;                    cpf = request.cpf,</b>
+<b class="fc">&nbsp;                    senha = request.senha,</b>
+<b class="fc">&nbsp;                    primeiroNome = request.primeiroNome,</b>
+<b class="fc">&nbsp;                    sobrenome = request.sobrenome,</b>
+<b class="fc">&nbsp;                    email = request.email,</b>
+<b class="fc">&nbsp;                    telefone = request.telefone,</b>
+<b class="fc">&nbsp;                    imagemPerfil = null,</b>
+<b class="fc">&nbsp;                    autenticado = request.autenticado</b>
+&nbsp;                )
+<b class="fc">&nbsp;                recrutadorRepository.save(recrutador.criarUsuario(null, empresa) as Recrutador)</b>
+&nbsp;            }
+&nbsp;            3 -&gt; {
+<b class="fc">&nbsp;                val administrador = Administrador(</b>
+<b class="fc">&nbsp;                    cargo = request.cargoUsuario!!,</b>
+<b class="fc">&nbsp;                    ultimoAcesso =  null,</b>
+<b class="fc">&nbsp;                    descricao = request.descricao!!,</b>
+<b class="fc">&nbsp;                    nivelAcesso = request.nivelAcesso!!,</b>
+<b class="fc">&nbsp;                    nomeUsuario = request.nomeUsuario,</b>
+<b class="fc">&nbsp;                    cpf = request.cpf,</b>
+<b class="fc">&nbsp;                    senha = request.senha,</b>
+<b class="fc">&nbsp;                    primeiroNome = request.primeiroNome,</b>
+<b class="fc">&nbsp;                    sobrenome = request.sobrenome,</b>
+<b class="fc">&nbsp;                    email = request.email,</b>
+<b class="fc">&nbsp;                    telefone = request.telefone,</b>
+<b class="fc">&nbsp;                    imagemPerfil = null,</b>
+<b class="fc">&nbsp;                    autenticado = request.autenticado</b>
+&nbsp;                )
+<b class="fc">&nbsp;                administradorRepository.save(administrador.criarUsuario(null, null) as Administrador)</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            else -&gt; throw IllegalArgumentException(&quot;Tipo de usuário inválido&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        val usuario = usuarioRepository.findByEmail(request.email)</b>
+<b class="fc">&nbsp;        return mapearUsuario(usuario)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun softDeleteUsuario(email: String, senha: String) {
+<b class="fc">&nbsp;        val usuario = usuarioRepository.findByEmailAndSenha(email, senha)</b>
+<b class="fc">&nbsp;            ?: throw IllegalArgumentException(&quot;Credenciais inválidas&quot;)</b>
+&nbsp;
+<b class="fc">&nbsp;        usuario.deletado = true</b>
+<b class="fc">&nbsp;        usuario.dataDeletado = LocalDateTime.now()</b>
+<b class="fc">&nbsp;        usuario.dataAtualizacao = LocalDateTime.now()</b>
+<b class="fc">&nbsp;        usuarioRepository.save(usuario)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun hardDeleteUsuario(email: String, senha: String) {
+<b class="fc">&nbsp;        val usuario = usuarioRepository.findByEmailAndSenha(email, senha)</b>
+<b class="fc">&nbsp;            ?: throw NoSuchElementException(&quot;Usuário não encontrado&quot;)</b>
+&nbsp;
+<b class="fc">&nbsp;        usuarioRepository.delete(usuario)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun listarUsuarios(tipo: String?): List&lt;Map&lt;String, Any?&gt;&gt; {
+<b class="pc">&nbsp;        return when (tipo?.lowercase()) {</b>
+<b class="fc">&nbsp;            &quot;aluno&quot; -&gt; usuarioRepository.findAll().filterIsInstance&lt;Aluno&gt;().map { aluno -&gt; mapearUsuario(aluno) }</b>
+<b class="nc">&nbsp;            &quot;recrutador&quot; -&gt; usuarioRepository.findAll().filterIsInstance&lt;Recrutador&gt;().map { recrutador -&gt; mapearUsuario(recrutador) }</b>
+<b class="nc">&nbsp;            &quot;administrador&quot; -&gt; usuarioRepository.findAll().filterIsInstance&lt;Administrador&gt;().map { administrador -&gt; mapearUsuario(administrador) }</b>
+<b class="fc">&nbsp;            else -&gt; usuarioRepository.findAll().map { usuario -&gt; mapearUsuario(usuario) }</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    fun buscarUsuarioPorId(idUsuario: Long): Map&lt;String, Any?&gt; {
+<b class="fc">&nbsp;        val usuario = usuarioRepository.findById(idUsuario)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Usuário não encontrado&quot;) }</b>
+<b class="fc">&nbsp;        return mapearUsuario(usuario)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun loginUsuario(email: String, senha: String): Any {
+<b class="fc">&nbsp;        val usuario = usuarioRepository.findByEmail(email)</b>
+<b class="fc">&nbsp;            ?: throw IllegalArgumentException(&quot;Usuário não encontrado&quot;)</b>
+&nbsp;
+<b class="pc">&nbsp;        if (usuario is Administrador) {</b>
+<b class="fc">&nbsp;            usuario.ultimoAcesso = LocalDateTime.now()</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        usuario.login(senha)</b>
+<b class="fc">&nbsp;        usuarioRepository.save(usuario)</b>
+&nbsp;
+<b class="fc">&nbsp;        return mapearUsuario(usuario)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    fun logoffUsuario(idUsuario: Long) {
+<b class="fc">&nbsp;        val usuario = usuarioRepository.findById(idUsuario)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Usuário não encontrado&quot;) }</b>
+&nbsp;
+<b class="fc">&nbsp;        usuario.logoff()</b>
+<b class="fc">&nbsp;        usuarioRepository.save(usuario)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun buscarUsuarioPorEmail(email: String): Map&lt;String, Any?&gt; {
+<b class="pc">&nbsp;        val usuario = usuarioRepository.findByEmail(email)</b>
+<b class="nc">&nbsp;            ?: throw NoSuchElementException(&quot;Usuário não encontrado&quot;)</b>
+<b class="fc">&nbsp;        return mapearUsuario(usuario)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun atualizarUsuario(idUsuario: Long, atualizacao: Map&lt;String, Any&gt;): Any {
+<b class="fc">&nbsp;            val usuarioExistente = usuarioRepository.findById(idUsuario)</b>
+<b class="fc">&nbsp;                .orElseThrow { NoSuchElementException(&quot;Usuário não encontrado com o ID: $idUsuario&quot;) }</b>
+&nbsp;
+<b class="fc">&nbsp;            atualizacao[&quot;nomeUsuario&quot;]?.let { usuarioExistente.nomeUsuario = it as String }</b>
+<b class="pc">&nbsp;            atualizacao[&quot;cpf&quot;]?.let { usuarioExistente.cpf = it as String }</b>
+<b class="pc">&nbsp;            atualizacao[&quot;primeiroNome&quot;]?.let { usuarioExistente.primeiroNome = it as String }</b>
+<b class="pc">&nbsp;            atualizacao[&quot;sobrenome&quot;]?.let { usuarioExistente.sobrenome = it as String }</b>
+<b class="fc">&nbsp;            atualizacao[&quot;email&quot;]?.let { usuarioExistente.email = it as String }</b>
+<b class="pc">&nbsp;            atualizacao[&quot;telefone&quot;]?.let { usuarioExistente.telefone = it as String }</b>
+<b class="fc">&nbsp;            usuarioExistente.dataAtualizacao = LocalDateTime.now()</b>
+&nbsp;
+<b class="fc">&nbsp;            if (usuarioExistente is Aluno) {</b>
+<b class="pc">&nbsp;                atualizacao[&quot;escolaridade&quot;]?.let { usuarioExistente.escolaridade = it as String }</b>
+<b class="pc">&nbsp;                atualizacao[&quot;sexo&quot;]?.let { usuarioExistente.sexo = it as String }</b>
+<b class="pc">&nbsp;                atualizacao[&quot;etnia&quot;]?.let { usuarioExistente.etnia = it as String }</b>
+<b class="pc">&nbsp;                atualizacao[&quot;dataNascimento&quot;]?.let { usuarioExistente.dtNasc = it as LocalDate }</b>
+<b class="pc">&nbsp;                atualizacao[&quot;descricao&quot;]?.let { usuarioExistente.descricao = it as String }</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            if (usuarioExistente is Recrutador) {</b>
+<b class="pc">&nbsp;                atualizacao[&quot;cargoUsuario&quot;]?.let { usuarioExistente.cargoUsuario = it as String }</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            if (usuarioExistente is Administrador) {</b>
+<b class="pc">&nbsp;                atualizacao[&quot;cargo&quot;]?.let { usuarioExistente.cargo = it as String }</b>
+<b class="pc">&nbsp;                atualizacao[&quot;descricao&quot;]?.let { usuarioExistente.descricao = it as String }</b>
+<b class="pc">&nbsp;                atualizacao[&quot;nivelAcesso&quot;]?.let { usuarioExistente.nivelAcesso = it as Int }</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;        usuarioRepository.save(usuarioExistente)</b>
+&nbsp;
+<b class="fc">&nbsp;        return mapearUsuario(usuarioExistente)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun atualizarImagemUsuario(idUsuario: Long, novaFoto: ByteArray) {
+<b class="fc">&nbsp;        if (novaFoto.isEmpty()) {</b>
+<b class="fc">&nbsp;            throw IllegalArgumentException(&quot;Requisição inválida: imagem vazia&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        val usuario = usuarioRepository.findById(idUsuario)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Usuário não encontrado&quot;) }</b>
+&nbsp;
+<b class="fc">&nbsp;        usuario.imagemPerfil = novaFoto</b>
+<b class="fc">&nbsp;        usuarioRepository.save(usuario)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    fun obterImagemPerfil(idUsuario: Long): ByteArray {
+<b class="fc">&nbsp;        val usuario = usuarioRepository.findById(idUsuario)</b>
+<b class="fc">&nbsp;            .orElseThrow { NoSuchElementException(&quot;Usuário não encontrado&quot;) }</b>
+&nbsp;
+<b class="fc">&nbsp;        return usuario.imagemPerfil ?: throw NoSuchElementException(&quot;Imagem de perfil não encontrada&quot;)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun reativarUsuario(email: String, senha: String) {
+<b class="fc">&nbsp;        val usuario = usuarioRepository.findByEmailAndSenha(email, senha)</b>
+<b class="fc">&nbsp;            ?: throw NoSuchElementException(&quot;Usuário não encontrado&quot;)</b>
+<b class="fc">&nbsp;        try {</b>
+<b class="fc">&nbsp;            usuario.reativar()</b>
+<b class="fc">&nbsp;            usuarioRepository.save(usuario)</b>
+<b class="fc">&nbsp;        } catch (e: IllegalArgumentException) {</b>
+<b class="fc">&nbsp;            throw e</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    fun mapearUsuario(usuario: Any): Map&lt;String, Any?&gt; {
+<b class="fc">&nbsp;        return when (usuario) {</b>
+<b class="fc">&nbsp;            is Aluno -&gt; mapOf(</b>
+<b class="fc">&nbsp;                &quot;id&quot; to usuario.id,</b>
+<b class="fc">&nbsp;                &quot;nomeUsuario&quot; to usuario.nomeUsuario,</b>
+<b class="fc">&nbsp;                &quot;cpf&quot; to usuario.cpf,</b>
+<b class="fc">&nbsp;                &quot;primeiroNome&quot; to usuario.primeiroNome,</b>
+<b class="fc">&nbsp;                &quot;sobrenome&quot; to usuario.sobrenome,</b>
+<b class="fc">&nbsp;                &quot;email&quot; to usuario.email,</b>
+<b class="fc">&nbsp;                &quot;telefone&quot; to usuario.telefone,</b>
+<b class="fc">&nbsp;                &quot;tipoUsuario&quot; to &quot;Aluno&quot;,</b>
+<b class="fc">&nbsp;                &quot;autenticado&quot; to usuario.autenticado,</b>
+<b class="fc">&nbsp;                &quot;dataCriacao&quot; to usuario.dataCriacao,</b>
+<b class="fc">&nbsp;                &quot;sexo&quot; to usuario.sexo,</b>
+<b class="fc">&nbsp;                &quot;etnia&quot; to usuario.etnia,</b>
+<b class="fc">&nbsp;                &quot;escolaridade&quot; to usuario.escolaridade,</b>
+<b class="fc">&nbsp;                &quot;descricao&quot; to usuario.descricao,</b>
+<b class="fc">&nbsp;                &quot;dataNascimento&quot; to usuario.dtNasc,</b>
+<b class="fc">&nbsp;                &quot;dataAtualizacao&quot; to usuario.dataAtualizacao,</b>
+<b class="fc">&nbsp;                &quot;deletado&quot; to usuario.deletado,</b>
+<b class="fc">&nbsp;                &quot;dataDeletado&quot; to usuario.dataDeletado,</b>
+<b class="fc">&nbsp;                &quot;endereco&quot; to usuario.endereco</b>
+&nbsp;            )
+<b class="fc">&nbsp;            is Recrutador -&gt; mapOf(</b>
+<b class="fc">&nbsp;                &quot;id&quot; to usuario.id,</b>
+<b class="fc">&nbsp;                &quot;nomeUsuario&quot; to usuario.nomeUsuario,</b>
+<b class="fc">&nbsp;                &quot;cpf&quot; to usuario.cpf,</b>
+<b class="fc">&nbsp;                &quot;primeiroNome&quot; to usuario.primeiroNome,</b>
+<b class="fc">&nbsp;                &quot;sobrenome&quot; to usuario.sobrenome,</b>
+<b class="fc">&nbsp;                &quot;email&quot; to usuario.email,</b>
+<b class="fc">&nbsp;                &quot;telefone&quot; to usuario.telefone,</b>
+<b class="fc">&nbsp;                &quot;tipoUsuario&quot; to &quot;Recrutador&quot;,</b>
+<b class="fc">&nbsp;                &quot;autenticado&quot; to usuario.autenticado,</b>
+<b class="fc">&nbsp;                &quot;cargoUsuario&quot; to usuario.cargoUsuario,</b>
+<b class="fc">&nbsp;                &quot;dataCriacao&quot; to usuario.dataCriacao,</b>
+<b class="fc">&nbsp;                &quot;dataAtualizacao&quot; to usuario.dataAtualizacao,</b>
+<b class="fc">&nbsp;                &quot;deletado&quot; to usuario.deletado,</b>
+<b class="fc">&nbsp;                &quot;dataDeletado&quot; to usuario.dataDeletado,</b>
+<b class="fc">&nbsp;                &quot;empresa&quot; to mapOf(</b>
+<b class="fc">&nbsp;                    &quot;nome&quot; to usuario.empresa.nomeEmpresa,</b>
+<b class="fc">&nbsp;                    &quot;cnpj&quot; to usuario.empresa.cnpj,</b>
+<b class="fc">&nbsp;                    &quot;setorIndustria&quot; to usuario.empresa.setorIndustria,</b>
+<b class="fc">&nbsp;                    &quot;telefoneContato&quot; to usuario.empresa.telefoneContato,</b>
+<b class="fc">&nbsp;                    &quot;emailCorporativo&quot; to usuario.empresa.emailCorporativo,</b>
+<b class="fc">&nbsp;                    &quot;endereco&quot; to usuario.empresa.endereco,</b>
+<b class="fc">&nbsp;                    &quot;dataCriacao&quot; to usuario.empresa.dataCriacao,</b>
+<b class="fc">&nbsp;                    &quot;recrutadores&quot; to usuario.empresa.recrutadores.map { it.nomeUsuario }</b>
+&nbsp;                )
+&nbsp;            )
+<b class="fc">&nbsp;            is Administrador -&gt; mapOf(</b>
+<b class="fc">&nbsp;                &quot;id&quot; to usuario.id,</b>
+<b class="fc">&nbsp;                &quot;nomeUsuario&quot; to usuario.nomeUsuario,</b>
+<b class="fc">&nbsp;                &quot;cpf&quot; to usuario.cpf,</b>
+<b class="fc">&nbsp;                &quot;primeiroNome&quot; to usuario.primeiroNome,</b>
+<b class="fc">&nbsp;                &quot;sobrenome&quot; to usuario.sobrenome,</b>
+<b class="fc">&nbsp;                &quot;email&quot; to usuario.email,</b>
+<b class="fc">&nbsp;                &quot;telefone&quot; to usuario.telefone,</b>
+<b class="fc">&nbsp;                &quot;tipoUsuario&quot; to &quot;Administrador&quot;,</b>
+<b class="fc">&nbsp;                &quot;autenticado&quot; to usuario.autenticado,</b>
+<b class="fc">&nbsp;                &quot;cargo&quot; to usuario.cargo,</b>
+<b class="fc">&nbsp;                &quot;descricao&quot; to usuario.descricao,</b>
+<b class="fc">&nbsp;                &quot;nivelAcesso&quot; to usuario.nivelAcesso,</b>
+<b class="fc">&nbsp;                &quot;ultimoAcesso&quot; to usuario.ultimoAcesso,</b>
+<b class="fc">&nbsp;                &quot;dataCriacao&quot; to usuario.dataCriacao,</b>
+<b class="fc">&nbsp;                &quot;dataAtualizacao&quot; to usuario.dataAtualizacao,</b>
+<b class="fc">&nbsp;                &quot;deletado&quot; to usuario.deletado,</b>
+<b class="fc">&nbsp;                &quot;dataDeletado&quot; to usuario.dataDeletado</b>
+&nbsp;            )
+<b class="fc">&nbsp;            else -&gt; throw IllegalStateException(&quot;Tipo de usuário desconhecido&quot;)</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 00:28</div>
+</div>
+</body>
+</html>

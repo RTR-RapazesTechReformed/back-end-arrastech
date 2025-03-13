@@ -1,0 +1,1431 @@
+{
+	"info": {
+		"_postman_id": "b0290830-71ef-4127-b87f-4968e075deda",
+		"name": "TechPointsV5",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32896562"
+	},
+	"item": [
+		{
+			"name": "Dados Empresa",
+			"item": [
+				{
+					"name": "Cadastrar Empresa",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.2.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nomeEmpresa\": \"TechForAll\",\n  \"cnpj\": \"12345678000195\",\n  \"setorIndustria\": \"Tecnologia\",\n  \"telefoneContato\": \"1123456789\",\n  \"emailCorporativo\": \"contato@techforall.com\",\n  \"enderecoId\": 1\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/empresa/cadastro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"empresa",
+								"cadastro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Empresa por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.2.0"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/empresa/buscar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"empresa",
+								"buscar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualização Empresa",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.2.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n\t\"nomeEmpresa\":\"umbrella 2.0\",\n\t\"setorIndustria\":\"super farmaceutica\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/empresa/atualizar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"empresa",
+								"atualizar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Empresas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/empresa/listar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"empresa",
+								"listar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reset Senha",
+			"item": [
+				{
+					"name": "Solicitar Troca",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.1.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\":\"rafahenriqueh31@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/reset-senha/solicitar-troca",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reset-senha",
+								"solicitar-troca"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Senha",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.1.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\":\"rafahenriqueh31@gmail.com\",\n\t\"novaSenha\":\"TestandonovaSenha1223@\",\n    \"token\":\"e7a08038\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/reset-senha/nova-senha",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reset-senha",
+								"nova-senha"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Validar token",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuário",
+			"item": [
+				{
+					"name": "Cadastrar novo aluno",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.0.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nomeUsuario\": \"leon\",\n\t\"cpf\": \"30451234589\",\n    \"senha\": \"Senha123@\",\n\t\"primeiroNome\": \"leon\",\n\t\"sobrenome\": \"kenaanedy\",\n\t\"email\": \"rafahenriqueh31@gmail.com\",\n    \"telefone\": \"14214215\",\n    \"tipoUsuario\": 1,\n    \"autenticado\": true,\n    \"escolaridade\": \"Superior Completo\",\n    \"enderecoId\": 1,\n    \"descricao\": \"Aluno de Ciência da Computação\",\n    \"dtNasc\": \"1990-01-01\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/usuarios/cadastro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"cadastro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cadastrar novo recrutador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.0.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cnpj\":\"12345678000195\",\n    \"nomeUsuario\": \"recrutador456\",\n    \"cpf\": \"09876543211\",\n    \"senha\": \"senha456\",\n    \"primeiroNome\": \"Maria\",\n    \"sobrenome\": \"Oliveira\",\n    \"email\": \"maria.oliveira@example.com\",\n    \"telefone\": \"11912345678\",\n    \"tipoUsuario\": 2,\n    \"autenticado\": true,\n    \"cargoUsuario\": \"Gerente de RH\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/usuarios/cadastro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"cadastro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login de usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.1.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"rafahenriqueh31@gmail.com\",\n     \"senha\": \"Senha123@\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/usuarios/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logoff de usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.0.0"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/usuarios/logoff?idUsuario=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"logoff"
+							],
+							"query": [
+								{
+									"key": "idUsuario",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Soft Delete ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.1.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\t\"email\": \"claire.redfield@racooncitypd.com\",\n\t\t\"senha\": \"Redfield123@\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/usuarios/deletar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"deletar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.0.0"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/usuarios/listar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"listar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar imagem de perfil",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.2.0"
+							},
+							{
+								"key": "Content-Type",
+								"value": "image/jpeg"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/usuarios/imagem/1?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"imagem",
+								"1"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar usuario por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.0.0"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/usuarios/buscar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"buscar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar usuario por email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.1.0"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/usuarios/buscarPorEmail?email=rafahenriqueh31@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"buscarPorEmail"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "rafahenriqueh31@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Hard Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.1.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\t\"email\": \"joao.silva@example.com\",\n\t\t\"senha\": \"senha1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/usuarios/deletar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"deletar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar imagem do perfil do usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "image/png"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.0.0"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "C:\\Users\\rafa_\\Downloads\\Ellipse 26.png"
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/usuarios/atualizar-imagem/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"atualizar-imagem",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar informações do usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.1.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cpf\": \"421421551\",\n\t\"sobrenome\":\"S Kennedy\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/usuarios/atualizar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"usuarios",
+								"atualizar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Endereço",
+			"item": [
+				{
+					"name": "Cadastrar novo endereço",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.0.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cep\": \"0923-1316\",\n    \"rua\": \"HaddockLobo\",\n    \"numero\": \"123\",\n    \"cidade\": \"São Paulo\",\n    \"estado\": \"SP\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/enderecos/cadastro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"enderecos",
+								"cadastro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cadastrar novo endereço 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.1.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cep\": \"12345-678\",\n     \"rua\": \"Raccoon City Police DP\",\n     \"numero\": \"123\",\n     \"estado\": \"PA\",\n     \"cidade\": \"Raccon City\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/enderecos/cadastro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"enderecos",
+								"cadastro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Endereços",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": []
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.0.0"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/enderecos/listar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"enderecos",
+								"listar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar endereço por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.0.0"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/enderecos/buscar/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"enderecos",
+								"buscar",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar endereço por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followRedirects": true,
+						"disableUrlEncoding": false,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/9.0.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cidade\": \"Rio de Janeiro\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/enderecos/atualizar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"enderecos",
+								"atualizar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DashRecrutador",
+			"item": [
+				{
+					"name": "Adicionar a lista",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "idRecrutador",
+								"value": "2",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "tipoLista",
+								"value": "favoritos",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "idAluno",
+								"value": "1",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/dashboardRecrutador/2/favoritos/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"dashboardRecrutador",
+								"2",
+								"favoritos",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar alunos de uma lista",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/dashboardRecrutador/2/listar/favoritos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"dashboardRecrutador",
+								"2",
+								"listar",
+								"favoritos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remover da lista",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/dashboardRecrutador/2/favoritos/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"dashboardRecrutador",
+								"2",
+								"favoritos",
+								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pontuacao",
+			"item": [
+				{
+					"name": "PontosAtividadeCurso",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/pontuacoes/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pontuacoes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "KpiPontos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/pontuacoes/kpi-semana/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pontuacoes",
+								"kpi-semana",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "KpiEntregas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/pontuacoes/kpi-entregas/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pontuacoes",
+								"kpi-entregas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PontosPorMês",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/pontuacoes/pontos-mes/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pontuacoes",
+								"pontos-mes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PontosTotatis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/pontuacoes/pontos-totais/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pontuacoes",
+								"pontos-totais",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ranking",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/pontuacoes/ranking",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pontuacoes",
+								"ranking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RankingComFiltro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/pontuacoes/alunos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pontuacoes",
+								"alunos"
+							],
+							"query": [
+								{
+									"key": "escolaridade",
+									"value": "Ensino Médio Completo",
+									"disabled": true
+								},
+								{
+									"key": "idade",
+									"value": "29",
+									"disabled": true
+								},
+								{
+									"key": "cursoId",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "cidade",
+									"value": "São Paulo",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

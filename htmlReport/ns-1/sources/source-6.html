@@ -1,0 +1,219 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > NotificacaoService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">techForAll.techPoints.service</a>
+</div>
+
+<h1>Coverage Summary for Class: NotificacaoService (techForAll.techPoints.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NotificacaoService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (38/38)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package techForAll.techPoints.service
+&nbsp;
+&nbsp;import org.springframework.mail.javamail.JavaMailSender
+&nbsp;import org.springframework.mail.javamail.MimeMessageHelper
+&nbsp;import org.springframework.stereotype.Service
+&nbsp;import techForAll.techPoints.domain.Aluno
+&nbsp;
+&nbsp;import techForAll.techPoints.domain.Notificacao
+&nbsp;import techForAll.techPoints.domain.Recrutador
+&nbsp;import techForAll.techPoints.repository.DadosEmpresaRepository
+&nbsp;import techForAll.techPoints.repository.NotificacaoRepository
+&nbsp;
+<b class="fc">&nbsp;@Service</b>
+&nbsp;class NotificacaoService(
+<b class="fc">&nbsp;    private val notificacaoRepository: NotificacaoRepository,</b>
+<b class="fc">&nbsp;    private val empresaRepository: DadosEmpresaRepository,</b>
+<b class="fc">&nbsp;    private val mailSender: JavaMailSender</b>
+&nbsp;) {
+&nbsp;
+&nbsp;    fun criarNotificacao(
+&nbsp;        aluno: Aluno,
+&nbsp;        recrutador: Recrutador,
+&nbsp;        idEmpresa: Long,
+&nbsp;        lista: String
+&nbsp;    ): Notificacao {
+<b class="fc">&nbsp;        val empresa = empresaRepository.findById(idEmpresa).orElseThrow {</b>
+<b class="fc">&nbsp;            IllegalArgumentException(&quot;Empresa com ID $idEmpresa não encontrada.&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        val notificacao = Notificacao(</b>
+<b class="fc">&nbsp;            aluno = aluno,</b>
+<b class="fc">&nbsp;            recrutador = recrutador,</b>
+<b class="fc">&nbsp;            empresa = empresa,</b>
+<b class="fc">&nbsp;            lista = lista</b>
+&nbsp;        )
+<b class="fc">&nbsp;        notificacaoRepository.save(notificacao)</b>
+&nbsp;
+<b class="fc">&nbsp;        val emailEnviado = enviarEmailNotificacaoLista(</b>
+<b class="fc">&nbsp;            aluno.email, aluno.primeiroNome, recrutador.primeiroNome, empresa.nomeEmpresa, lista</b>
+&nbsp;        )
+&nbsp;
+<b class="fc">&nbsp;        if (!emailEnviado) {</b>
+<b class="fc">&nbsp;            println(&quot;Erro ao enviar o e-mail para o aluno ${aluno.primeiroNome}.&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return notificacao</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun enviarEmailNotificacaoLista(
+&nbsp;        emailDestino: String,
+&nbsp;        nomeAluno: String,
+&nbsp;        nomeRecrutador: String,
+&nbsp;        nomeEmpresa: String,
+&nbsp;        tipoLista: String
+&nbsp;    ): Boolean {
+<b class="fc">&nbsp;        return try {</b>
+<b class="fc">&nbsp;            val message = mailSender.createMimeMessage()</b>
+<b class="fc">&nbsp;            val helper = MimeMessageHelper(message, true)</b>
+&nbsp;
+<b class="fc">&nbsp;            val emailContent = &quot;&quot;&quot;</b>
+&nbsp;            &lt;html&gt;
+&nbsp;                &lt;body style=&quot;font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;&quot;&gt;
+&nbsp;                    &lt;div style=&quot;max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);&quot;&gt;
+&nbsp;                        &lt;h2 style=&quot;text-align: center; color: #007bff;&quot;&gt;Notificação de Adição à Lista&lt;/h2&gt;
+<b class="fc">&nbsp;                        &lt;p style=&quot;text-align: center;&quot;&gt;Olá, $nomeAluno!&lt;/p&gt;</b>
+<b class="fc">&nbsp;                        &lt;p style=&quot;text-align: center;&quot;&gt;Você foi adicionado(a) à lista &lt;strong&gt;$tipoLista&lt;/strong&gt; pelo(a) recrutador(a) &lt;strong&gt;$nomeRecrutador&lt;/strong&gt; da empresa &lt;strong&gt;$nomeEmpresa&lt;/strong&gt;.&lt;/p&gt;</b>
+&nbsp;                        &lt;p style=&quot;text-align: center;&quot;&gt;Por favor, acesse sua conta para mais detalhes e acompanhe seu progresso.&lt;/p&gt;
+&nbsp;                        &lt;p style=&quot;text-align: center;&quot;&gt;Atenciosamente,&lt;br&gt;Equipe Tech4All&lt;/p&gt;
+&nbsp;                        &lt;footer style=&quot;text-align: center; font-size: 0.8em; color: #666;&quot;&gt;
+&nbsp;                            &lt;p&gt;Tech4All - Rua Doutor Joviano Pacheco de Aguirre, 255 - Campo Limpo, São Paulo, SP, 05788-290&lt;/p&gt;
+&nbsp;                            &lt;p&gt;&lt;a href=&quot;https://www.tech4all.com&quot; style=&quot;color: #007bff; text-decoration: none;&quot;&gt;Visite nosso site&lt;/a&gt;&lt;/p&gt;
+&nbsp;                        &lt;/footer&gt;
+&nbsp;                    &lt;/div&gt;
+&nbsp;                &lt;/body&gt;
+&nbsp;            &lt;/html&gt;
+<b class="fc">&nbsp;            &quot;&quot;&quot;.trimIndent()</b>
+&nbsp;
+<b class="fc">&nbsp;            helper.setTo(emailDestino)</b>
+<b class="fc">&nbsp;            helper.setSubject(&quot;Você foi adicionado a uma nova lista&quot;)</b>
+<b class="fc">&nbsp;            helper.setText(emailContent, true)</b>
+&nbsp;
+<b class="fc">&nbsp;            mailSender.send(message)</b>
+<b class="fc">&nbsp;            true</b>
+<b class="fc">&nbsp;        } catch (e: Exception) {</b>
+<b class="fc">&nbsp;            println(&quot;Erro ao enviar e-mail: ${e.message}&quot;)</b>
+<b class="fc">&nbsp;            false</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    fun marcarNotificacaoComoLida(idAluno: Long, idNotificacao: Long): Notificacao {
+<b class="fc">&nbsp;        val notificacao = notificacaoRepository.findById(idNotificacao).orElseThrow { NoSuchElementException(&quot;Notificação não encontrada&quot;) }</b>
+&nbsp;
+<b class="fc">&nbsp;        if (notificacao.aluno.id != idAluno) {</b>
+<b class="fc">&nbsp;            throw IllegalArgumentException(&quot;Notificação não pertence ao aluno especificado&quot;)</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        notificacao.status = true</b>
+<b class="fc">&nbsp;        return notificacaoRepository.save(notificacao)</b>
+&nbsp;    }
+&nbsp;    fun getNotificacoesPorAluno(idAluno: Long): List&lt;Notificacao&gt; {
+<b class="fc">&nbsp;        return notificacaoRepository.findByAlunoIdAndStatusFalse(idAluno)</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 00:28</div>
+</div>
+</body>
+</html>
