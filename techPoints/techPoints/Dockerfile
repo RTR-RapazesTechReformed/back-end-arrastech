@@ -8,8 +8,6 @@ RUN mvn clean package -DskipTests=true
 FROM eclipse-temurin:17-jdk-alpine as prod
 RUN mkdir /app
 COPY --from=builder /app/target/*.jar /app/app.jar
-ENV SERVER_PORT=8080
-ENV PASSWORD=password
 WORKDIR /app
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/app/app.jar"]
